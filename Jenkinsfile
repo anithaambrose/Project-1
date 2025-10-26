@@ -35,7 +35,7 @@ pipeline {
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
           def port = (envType == 'prod') ? '80:80' : '8081:80'
 	  def container = "app-cont-${envType}"
-
+	  sshagent (credentials: ['newtestkey.pem']){
           sh """
 	    ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '''
 		
@@ -50,6 +50,7 @@ pipeline {
 	    '''
           """
         }
+       }	
       }
     }
   }
