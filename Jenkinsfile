@@ -4,7 +4,7 @@ pipeline {
     DOCKERHUB = 'anitodevops'       
     REPO = 'react-app'              
     DOCKER_CRED_ID = 'dockerhub-creds'
-    SSH_KEY = 'newtestkey.pem'
+    SSH_KEY = '/devops-build/newtestkey.pem'
   }
   triggers {
        githubPush ()
