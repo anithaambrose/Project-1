@@ -33,7 +33,7 @@ pipeline {
       steps {
         script {
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
-          def port = (envType == 'prod') ? '80:80' : '8080:80'
+          def port = (envType == 'prod') ? '80:80' : '8081:80'
 	  def container = "app-cont-${envType}"
           sh """
             if [ "\$(docker ps -q -f name=${container})" ]; then
