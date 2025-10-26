@@ -4,6 +4,7 @@ pipeline {
     DOCKERHUB = 'anitodevops'       
     REPO = 'react-app'              
     DOCKER_CRED_ID = 'dockerhub-creds'
+    SSH_KEY = 'newtestkey.pem'
   }
   triggers {
        githubPush ()
@@ -35,14 +36,19 @@ pipeline {
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
           def port = (envType == 'prod') ? '80:80' : '8081:80'
 	  def container = "app-cont-${envType}"
+
           sh """
-            if [ "\$(docker ps -q -f name=${container})" ]; then
-                docker stop ${container}
-                docker rm ${container}
-            elif [ "\$(docker ps -aq -f name=${container})" ]; then
-                docker rm ${container}
-            fi
-            docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
+	    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '''
+		
+		if [ "\$(sudo docker ps -q -f name=${container})" ]; then
+                	sudo docker stop ${container}
+                	sudo docker rm ${container}
+            	elif [ "\$(sudo docker ps -aq -f name=${container})" ]; then
+                	sudo docker rm ${container}
+            	fi
+		sudo docker pull ${IMAGE_LATEST}
+            	sudo docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
+	    '''
           """
         }
       }
