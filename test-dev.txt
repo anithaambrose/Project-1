@@ -1,2 +1,3 @@
 pushing . file to dev branch to trigger jenkins pipeline for dev branch
-so that git files are downloaded , build an image from dockerfile & pushed to dockerhub. 
+so that git files are downloaded , build an image from dockerfile & pushed to dockerhub
+respective dev repo and then deploys in current server and starts app container in respective dev env. 
