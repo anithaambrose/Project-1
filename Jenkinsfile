@@ -34,10 +34,12 @@ pipeline {
         script {
 
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
-          def port = (envType == 'prod') ? '80:80' : '8081:80'
+          def port = '80:80'
 	  def container = "app-cont-${envType}"
 	  
-	  //logging to application server to perform deployment
+	  if (envType == 'prod') {
+	  //logging to Production server to perform Application deployment
+
 	  withCredentials([usernamePassword(credentialsId: "${DOCKER_CRED_ID}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]){
 	  sshagent (credentials: ['newtestkey.pem']){
           sh """
@@ -58,6 +60,10 @@ pipeline {
 	 }
         }
        }	
+	  else {
+		echo " Skipping Deployment for Dev branch on Production Server."
+	  }
+	}
       }
     }
   }
