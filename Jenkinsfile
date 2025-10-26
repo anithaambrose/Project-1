@@ -39,32 +39,31 @@ pipeline {
 	  
 	  if (envType == 'prod') {
 	  //logging to Production server to perform Application deployment
+	    withCredentials([usernamePassword(credentialsId: "${DOCKER_CRED_ID}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
+              sshagent (credentials: ['newtestkey.pem']) {
+                sh """
+                  ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '
+                    echo "$DH_PASS" | sudo docker login -u "$DH_USER" --password-stdin
 
-	  withCredentials([usernamePassword(credentialsId: "${DOCKER_CRED_ID}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]){
-	  sshagent (credentials: ['newtestkey.pem']){
-          sh """
-	    ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '
-		echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
-	
-		if [ "\$(sudo docker ps -q -f name=${container})" ]; then
-                	sudo docker stop ${container}
-                	sudo docker rm ${container}
-            	elif [ "\$(sudo docker ps -aq -f name=${container})" ]; then
-                	sudo docker rm ${container}
-            	fi
+                    if [ "\$(sudo docker ps -q -f name=${container})" ]; then
+                        sudo docker stop ${container}
+                        sudo docker rm ${container}
+                    elif [ "\$(sudo docker ps -aq -f name=${container})" ]; then
+                        sudo docker rm ${container}
+                    fi
 
-		sudo docker pull ${IMAGE_LATEST}
-            	sudo docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
-	    '
-          """
-	 }
-        }
-       }	
+                    sudo docker pull ${IMAGE_LATEST}
+                    sudo docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
+                  '
+                """
+              }
+            }
+     	  } 
 	  else {
-		echo " Skipping Deployment for Dev branch on Production Server."
-	  }
-	}
-      }
-    }
-  }
+        	echo "Skipping deployment for Dev Environment on App-Production Server."
+      	  } 
+       }
+     }
+   }
+ }
 }
