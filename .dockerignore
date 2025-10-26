@@ -1,0 +1,17 @@
+# Ignore Git files
+.git
+.gitignore
+# Ignore Docker files
+.dockerignore
+Dockerfile
+docker-compose.yml
+# Ignore scripts
+build.sh
+deploy.sh
+# Ignore system and temporary files
+*.md
+*.log
+*.tmp
+node_modules
+.env
+

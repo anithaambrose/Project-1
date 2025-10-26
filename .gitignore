@@ -1,0 +1,15 @@
+# Dependency directories
+node_modules/
+.env
+# Logs
+*.log*
+# OS / Editor files
+.DS_Store
+*.swp
+*.bak
+*.tmp
+# Private or local configs
+*.pem
+*.key
+*.crt
+

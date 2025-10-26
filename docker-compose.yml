@@ -1,0 +1,9 @@
+version: "3"
+services:
+  web:
+    build: .
+    image: anitodevops/react-app-dev:latest
+    container_name: react-app
+    ports:
+      - "80:80"
+    restart: always
