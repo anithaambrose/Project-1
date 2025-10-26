@@ -33,7 +33,8 @@ pipeline {
       steps {
         script {
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
-          def container = "app-cont-${envType}"
+          def port = (envType == 'prod') ? '80:80' : '8080:80'
+	  def container = "app-cont-${envType}"
           sh """
             if [ "\$(docker ps -q -f name=${container})" ]; then
                 docker stop ${container}
@@ -41,7 +42,7 @@ pipeline {
             elif [ "\$(docker ps -aq -f name=${container})" ]; then
                 docker rm ${container}
             fi
-            docker run -d --name ${container} -p 80:80 ${IMAGE_LATEST}
+            docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
           """
         }
       }
