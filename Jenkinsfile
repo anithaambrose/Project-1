@@ -32,23 +32,30 @@ pipeline {
     stage('Deploy') {
       steps {
         script {
+
           def envType = (env.BRANCH_NAME == 'master') ? 'prod' : 'dev'
           def port = (envType == 'prod') ? '80:80' : '8081:80'
 	  def container = "app-cont-${envType}"
+	  
+	  //logging to application server to perform deployment
+	  withCredentials([usernamePassword(credentialsId: "${DOCKER_CRED_ID}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]){
 	  sshagent (credentials: ['newtestkey.pem']){
           sh """
-	    ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '''
-		
+	    ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '
+		echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
+	
 		if [ "\$(sudo docker ps -q -f name=${container})" ]; then
                 	sudo docker stop ${container}
                 	sudo docker rm ${container}
             	elif [ "\$(sudo docker ps -aq -f name=${container})" ]; then
                 	sudo docker rm ${container}
             	fi
+
 		sudo docker pull ${IMAGE_LATEST}
             	sudo docker run -d --name ${container} -p ${port} ${IMAGE_LATEST}
-	    '''
+	    '
           """
+	 }
         }
        }	
       }
