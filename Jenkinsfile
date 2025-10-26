@@ -4,7 +4,6 @@ pipeline {
     DOCKERHUB = 'anitodevops'       
     REPO = 'react-app'              
     DOCKER_CRED_ID = 'dockerhub-creds'
-    SSH_KEY = '/devops-build/newtestkey.pem'
   }
   triggers {
        githubPush ()
@@ -38,7 +37,7 @@ pipeline {
 	  def container = "app-cont-${envType}"
 
           sh """
-	    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '''
+	    ssh -o StrictHostKeyChecking=no ubuntu@65.1.148.9 '''
 		
 		if [ "\$(sudo docker ps -q -f name=${container})" ]; then
                 	sudo docker stop ${container}
