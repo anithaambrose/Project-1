@@ -1,1 +1,2 @@
-pushing . file to dev branch to trigger jenkins pipeline for dev branch 
+pushing . file to dev branch to trigger jenkins pipeline for dev branch
+so that git files are downloaded , build an image from dockerfile & pushed to dockerhub. 
